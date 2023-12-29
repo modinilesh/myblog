@@ -4,11 +4,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.springboot.blog.entity.Post;
 import com.springboot.blog.exceptions.ResourceNotFound;
 import com.springboot.blog.payload.PostDto;
+import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.repository.PostRepository;
 import com.springboot.blog.service.PostService;
 
@@ -35,11 +40,32 @@ public class PostServiceImpl implements PostService {
 
 	// get all post
 	@Override
-	public List<PostDto> getAllPosts() {
+	public PostResponse getAllPosts(int pageNo, int pageSize, String sortBy, String sortDir) {
+		
+		//Creating object of Sort
+		Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+		
+		//Creating Pageable object
+		Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+		
+		//get Page Object of post from pageable
+		Page<Post> getAllPosts = postRepository.findAll(pageable);
+		
+		//get content from Page Object
+		List<Post> posts = getAllPosts.getContent();
+		
+		List<PostDto> contentAsDTO = posts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
+		
+		//Creating a Good Response
+		PostResponse postResponse = new PostResponse();
+		postResponse.setContent(contentAsDTO);
+		postResponse.setPageNo(getAllPosts.getNumber());
+		postResponse.setPageSize(getAllPosts.getSize());
+		postResponse.setTotalElements(getAllPosts.getTotalElements());
+		postResponse.setTotalPages(getAllPosts.getTotalPages());
+		postResponse.setLast(getAllPosts.isLast());
 
-		List<Post> posts = postRepository.findAll();
-		return posts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
-
+		return postResponse;
 	}
 
 	// get post by ID
@@ -48,7 +74,7 @@ public class PostServiceImpl implements PostService {
 		// getting post
 		Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Post", "id", id));
 
-		// maping post to DTO
+		// mapping post to DTO
 		PostDto response = mapToDTO(post);
 		return response;
 	}
