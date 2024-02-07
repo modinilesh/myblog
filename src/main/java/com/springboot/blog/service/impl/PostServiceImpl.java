@@ -19,10 +19,12 @@ import com.springboot.blog.service.PostService;
 
 @Service
 public class PostServiceImpl implements PostService {
+	
 
 	@Autowired
 	PostRepository postRepository;
 
+	//create Post
 	@Override
 	public PostDto createPost(PostDto postDto) {
 
@@ -72,7 +74,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public PostDto getPostById(long id) {
 		// getting post
-		Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Post", "id", id));
+		Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Post", "Id", id));
 
 		// mapping post to DTO
 		PostDto response = mapToDTO(post);
