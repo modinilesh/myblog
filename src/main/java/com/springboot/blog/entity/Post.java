@@ -1,10 +1,16 @@
 package com.springboot.blog.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -41,5 +47,11 @@ public class Post {
 	
 	@Column(name = "content", nullable = false)
 	private String content;
+	
+	//one post mapped to many comments //post is defined variable name in Comment Entity
+	//CascadeType.ALL --> operations on child gets executed along with it's parent
+	//orphanRemoval = true --> if parent is deleted then child also deleted
+	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)	
+	Set<Comment> comments = new HashSet<>();
 
 }
