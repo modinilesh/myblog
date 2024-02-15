@@ -1,5 +1,7 @@
 package com.springboot.blog.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -37,6 +39,7 @@ public class Comment {
 	
 	//Many comments can be mapped to single post so use @ManyToOne
 	@ManyToOne(fetch = FetchType.LAZY) //as we dont want to get unnecessary data associated with Post object, we use LAZY 
+	@JsonBackReference
 	@JoinColumn(name = "post_id", nullable = false)
 	private Post post;
 	

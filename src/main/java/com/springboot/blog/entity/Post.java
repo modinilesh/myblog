@@ -6,6 +6,7 @@ import java.util.Set;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,7 +28,6 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 
 @Entity
 @Table(
@@ -51,7 +51,7 @@ public class Post {
 	//one post mapped to many comments //post is defined variable name in Comment Entity
 	//CascadeType.ALL --> operations on child gets executed along with it's parent
 	//orphanRemoval = true --> if parent is deleted then child also deleted
-	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)	
+	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)	
 	Set<Comment> comments = new HashSet<>();
 
 }
