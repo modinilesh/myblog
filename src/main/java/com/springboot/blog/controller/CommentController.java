@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.springboot.blog.payload.CommentDto;
 import com.springboot.blog.service.CommentService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api")
 public class CommentController {
@@ -28,7 +30,7 @@ public class CommentController {
 	// Create comment
 	@PostMapping("/posts/{postId}")
 	public ResponseEntity<CommentDto> createComment(@PathVariable(value = "postId") long postId,
-			@RequestBody CommentDto commentDto) {
+			@Valid @RequestBody CommentDto commentDto) {
 		return new ResponseEntity<>(commentService.createComment(postId, commentDto), HttpStatus.CREATED);
 	}
 
@@ -51,11 +53,11 @@ public class CommentController {
 	public ResponseEntity<CommentDto> updateComment(
 			@PathVariable(value = "postId") long postId,
 			@PathVariable(value = "commentId") long commentId,
-			@RequestBody CommentDto commentDto){
+			@Valid @RequestBody CommentDto commentDto){
 		return new ResponseEntity<CommentDto>(commentService.updateComment(postId, commentId, commentDto), HttpStatus.OK);
 	}
 	
-	//Update Comment
+	//Delete Comment
 	@DeleteMapping("/posts/{postId}/comments/{commentId}")
 	public ResponseEntity<String> deleteComment(
 			@PathVariable(value = "postId") long postId,
