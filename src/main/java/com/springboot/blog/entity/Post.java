@@ -3,6 +3,8 @@ package com.springboot.blog.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -52,6 +54,7 @@ public class Post {
 	//CascadeType.ALL --> operations on child gets executed along with it's parent
 	//orphanRemoval = true --> if parent is deleted then child also deleted
 	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)	
+	@JsonManagedReference
 	Set<Comment> comments = new HashSet<>();
 
 }
