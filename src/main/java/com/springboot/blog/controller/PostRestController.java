@@ -3,6 +3,7 @@ package com.springboot.blog.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,7 @@ public class PostRestController {
 	private static final Logger logger = LoggerFactory.getLogger(PostRestController.class);
 
 	// Creating Post
+	@PreAuthorize("hasRole('ADMIN')")		//only ADMIN user will be able to create post
 	@PostMapping
 	public ResponseEntity<PostDto> createPosts(@Valid @RequestBody PostDto postDto) {
 		logger.info("Creating a new Post.");
@@ -60,6 +62,7 @@ public class PostRestController {
 	}
 
 	// Update post
+	@PreAuthorize("hasRole('ADMIN')")		//only ADMIN user will be able to update post
 	@PutMapping("/{id}")
 	public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto, @PathVariable(name = "id") long id) {
 		PostDto response = postService.updatePost(postDto, id);
@@ -68,6 +71,7 @@ public class PostRestController {
 	}
 
 	// Delete post
+	@PreAuthorize("hasRole('ADMIN')")			//only ADMIN user will be able to delete post
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deletePost(@PathVariable(name = "id") long id) {
 		logger.info("Deleting Post with PostID : " + id);
