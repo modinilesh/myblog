@@ -19,6 +19,13 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration 	//that will help in auto configuration at starting of the application
 @EnableMethodSecurity 	//that will help us in achieving method level security check the definition for more details
 public class SecurityConfig {
+
+	private static final String[] SWAGGER_WHITELIST = {
+			"/swagger-ui/**",
+			"/v3/api-docs/**",
+			"/swagger-resources/**",
+			"/swagger-resources"
+	};
 	
 	@Bean
 	public static PasswordEncoder passwordEncoder() {
@@ -31,7 +38,9 @@ public class SecurityConfig {
 		http.csrf().disable()
 				.authorizeHttpRequests((authorize) -> 
 					//authorize.anyRequest().authenticated()	//for any request to be authenticated
-					authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+					authorize
+							.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+							.requestMatchers(SWAGGER_WHITELIST).permitAll()
 					.anyRequest().authenticated()
 				)
 				.httpBasic(Customizer.withDefaults());
